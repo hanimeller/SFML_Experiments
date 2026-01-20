@@ -14,7 +14,7 @@ protected:
 	std::function<void()> m_CallBackFunc;
 
 public:
-	Button();
+	using Widget::Widget;
 
 	template <typename F, typename... Args>
 	void SetCallback(F&& func, Args&&... args)
@@ -27,15 +27,14 @@ public:
 		m_CallBackFunc = std::move(lambda);
 	}
 
-	//void SetCallback(std::function<void()> func);
-
-	void Render(sf::RenderWindow* window) override;
+	void Render() override;
 
 	void SetSize(const sf::Vector2f& size) noexcept;
 	void SetPosition(const sf::Vector2f& pos) noexcept;
 
 	void OnMouseEnter() noexcept override;
 	void OnMouseLeave() noexcept override;
+	void OnMouseMove(int x, int y) noexcept override;
 	void OnPress() noexcept override;
 	void OnRelease() noexcept override;
 

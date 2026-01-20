@@ -1,6 +1,11 @@
 #include "UI/ui.h"
 #include "UI/widget.h"
 
+
+//void UI::UiManager::CreateWidget(EWidgetType type)
+//{
+//}
+
 void UI::UiManager::AddWidget(Widget* w) noexcept
 {
 	if (w)
@@ -16,7 +21,7 @@ void UI::UiManager::RenderAllWidgets(sf::RenderWindow* window)
 {
 	for (const auto& w : m_Widgets)
 	{
-		w->Render(window);
+		w->Render();
 	}
 }
 

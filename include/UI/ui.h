@@ -5,20 +5,38 @@
 
 class Widget;
 
+//enum class EWidgetType : uint8_t
+//{
+//    WIDGET,
+//    BUTTON,
+//    LISTVIEW
+//};
+
 namespace UI
 {
 	class UiManager
 	{
     public:
-        static UiManager& Instance()
-        {
-            static UiManager instance; // thread-safe (C++11)
-            return instance;
+
+        static UiManager& Instance(sf::RenderWindow* window = nullptr) {
+            static std::unique_ptr<UiManager> instance;
+
+            if (!instance) {
+                if (window == nullptr) {
+                    throw std::runtime_error("First call to getInstance must provide a window pointer!");
+                }
+                instance.reset(new UiManager(*window));
+            }
+
+            return *instance;
         }
 
+        explicit UiManager(sf::RenderWindow& w) : window(w) {}
+        ~UiManager() = default;
         UiManager(const UiManager&) = delete;
         UiManager& operator=(const UiManager&) = delete;
 
+        //void CreateWidget(EWidgetType type);
         void AddWidget(Widget* w) noexcept;
         void RemoveWidget(Widget* w);
         void RenderAllWidgets(sf::RenderWindow* window);
@@ -28,8 +46,7 @@ namespace UI
         void OnMouseRelease(int x, int y, const sf::Mouse::Button& button);
 
     private:
-        UiManager() = default;
-        ~UiManager() = default;
+        sf::RenderWindow& window;
 
         std::unordered_set<Widget*> m_Widgets;
 	};

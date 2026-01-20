@@ -1,7 +1,15 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-static std::string GetButtonName(const sf::Mouse::Button& button)
+enum class ECorner : uint8_t
+{
+	LEFT_TOP,
+	LEFT_BOTTOM,
+	RIGHT_TOP,
+	RIGHT_BOTTOM
+};
+
+static std::string GetButtonName(const sf::Mouse::Button& button) noexcept
 {
 	switch (button)
 	{
@@ -13,13 +21,43 @@ static std::string GetButtonName(const sf::Mouse::Button& button)
 	return std::string();
 }
 
+static sf::Vector2f GetCorner(
+	ECorner c,
+	const sf::Vector2f& pos,
+	const sf::Vector2f& size) noexcept
+{
+	sf::Vector2f result;
+
+	switch (c)
+	{
+	case ECorner::LEFT_TOP:
+		result.x = pos.x;
+		result.y = pos.y;
+		break;
+	case ECorner::LEFT_BOTTOM:
+		result.x = pos.x;
+		result.y = pos.y + size.y;
+		break;
+	case ECorner::RIGHT_TOP:
+		result.x = pos.x + size.x;
+		result.y = pos.y;
+		break;
+	case ECorner::RIGHT_BOTTOM:
+		result.x = pos.x + size.x;
+		result.y = pos.y + size.y;
+		break;
+	}
+
+	return result;
+}
+
 class Widget
 {
 public:
-	Widget();
+	explicit Widget(sf::RenderWindow& w);
 	virtual ~Widget() = default;
 
-	virtual void Render(sf::RenderWindow* window);
+	virtual void Render();
 	void CheckHover(int x, int y) noexcept;
 
 	virtual void OnMouseEnter() noexcept;
@@ -35,7 +73,9 @@ public:
 	virtual void SetPosition(const sf::Vector2f& pos) noexcept;
 
 protected:
+	sf::RenderWindow& window;
 	sf::RectangleShape m_Shape{};
+	sf::RectangleShape debugShape{};
 	sf::Vector2f m_Size{};
 	sf::Vector2f m_Pos{};
 	bool bHovered{ false };

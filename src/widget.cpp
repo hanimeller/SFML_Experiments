@@ -2,14 +2,19 @@
 #include "UI/ui.h"
 #include <iostream>
 #include <iomanip>
+#include "utils.h"
 
-Widget::Widget()
+Widget::Widget(sf::RenderWindow& w)
+	: window(w)
 {
 	m_Shape.setSize({ 75.f, 35.f });
 	m_Shape.setPosition({ 2.f, 2.f });
 	m_Shape.setFillColor(sf::Color::Transparent);
 	m_Shape.setOutlineColor(sf::Color::Green);
 	m_Shape.setOutlineThickness(2.f);
+
+	debugShape.setSize({ 12.5f, 12.5f });
+	debugShape.setFillColor(sf::Color::Red);
 
 	UI::UiManager::Instance().AddWidget(this);
 }
@@ -27,6 +32,7 @@ bool Widget::IsOverlap(int x, int y) noexcept
 	{
 		return true;
 	}
+
 	return false;
 }
 
@@ -56,38 +62,26 @@ void Widget::CheckHover(int x, int y) noexcept
 
 void Widget::OnMouseEnter() noexcept
 {
-	//std::cout << "\nOnMouseEnter";
-
-	m_Shape.setOutlineColor(sf::Color::Yellow);
 }
 
 void Widget::OnMouseLeave() noexcept
 {
-	//std::cout << "\nOnMouseLeave";
-
-	m_Shape.setOutlineColor(sf::Color::Green);
 }
 
 void Widget::OnMouseMove(int x, int y) noexcept
 {
-	//std::cout << std::setw(20) << "\rOnMouseMove X: " << x << " Y: " << y;
 }
 
 void Widget::OnPress() noexcept
 {
-	std::cout << "\nPress";
-	m_Shape.setOutlineColor(sf::Color::Blue);
 }
 
 void Widget::OnRelease() noexcept
 {
-	std::cout << "\nRelease";
-	m_Shape.setOutlineColor(sf::Color::Green);
 }
 
 void Widget::CheckPress(int x, int y, const sf::Mouse::Button& button) noexcept
 {
-	//std::cout << '\n' << GetButtonName(button);
 	if (IsOverlap(x, y))
 	{
 		bPressed = true;
@@ -97,7 +91,6 @@ void Widget::CheckPress(int x, int y, const sf::Mouse::Button& button) noexcept
 
 void Widget::CheckRelease(int x, int y, const sf::Mouse::Button& button) noexcept
 {
-	//std::cout << '\n' << GetButtonName(button);
 	if (IsOverlap(x, y) && bPressed)
 	{
 		bPressed = false;
@@ -117,7 +110,8 @@ void Widget::SetPosition(const sf::Vector2f& pos) noexcept
 	m_Shape.setPosition(pos);
 }
 
-void Widget::Render(sf::RenderWindow* window)
+void Widget::Render()
 {
-	//window->draw(m_Shape);
+	window.draw(m_Shape);
+	window.draw(debugShape);
 }
