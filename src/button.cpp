@@ -45,7 +45,15 @@ void Button::OnPress() noexcept
 void Button::OnRelease() noexcept
 {
 	m_FrontSprite = m_NormSprite.get();
+
+	if (m_CallBackFunc)
+		m_CallBackFunc();
 }
+
+//void Button::SetCallback(std::function<void()> func)
+//{
+//	m_CallBackFunc = std::move(func);
+//}
 
 void Button::SetNormalVisual(const sf::Texture& texture)
 {

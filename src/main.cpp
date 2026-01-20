@@ -2,6 +2,7 @@
 #include "UI/widget.h"
 #include "UI/ui.h"
 #include "UI/button.h"
+#include <iostream>
 
 int main()
 {
@@ -19,8 +20,14 @@ int main()
 	if (!pressTexture.loadFromFile("../resource/image/buttonPress.jpg"))
 		return -1;
 
+	auto f = [](const char* s, int x, float y)
+		{
+			std::cout << '\n' << s << x << y;
+		};
 
 	Button btn;
+	btn.SetCallback(f, "asdqwe", 5, 3.f);
+
 	btn.SetNormalVisual(normTexture);
 	btn.SetHoverVisual(hoverTexture);
 	btn.SetPressVisual(pressTexture);

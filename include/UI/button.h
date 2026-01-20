@@ -1,5 +1,7 @@
-#include "UI/widget.h"
+#pragma once
 
+#include "UI/widget.h"
+#include <functional>
 
 class Button : public Widget
 {
@@ -9,8 +11,23 @@ protected:
 	std::unique_ptr<sf::Sprite> m_HoverSprite;
 	std::unique_ptr<sf::Sprite> m_PressSprite;
 
+	std::function<void()> m_CallBackFunc;
+
 public:
 	Button();
+
+	template <typename F, typename... Args>
+	void SetCallback(F&& func, Args&&... args)
+	{
+		auto lambda = [=]() mutable
+			{
+				func(args...);
+			};
+
+		m_CallBackFunc = std::move(lambda);
+	}
+
+	//void SetCallback(std::function<void()> func);
 
 	void Render(sf::RenderWindow* window) override;
 
