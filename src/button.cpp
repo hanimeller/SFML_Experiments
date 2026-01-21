@@ -15,7 +15,7 @@ void Button::SetSize(sf::Vector2f size) noexcept
 {
 	Widget::SetSize(size);
 
-	auto updateSprite = [this](sf::Sprite* sprite)
+	auto updateSpritePos = [this](sf::Sprite* sprite)
 		{
 			if (!sprite)
 				return;
@@ -34,9 +34,9 @@ void Button::SetSize(sf::Vector2f size) noexcept
 			sprite->setPosition(centerPos);
 		};
 
-	updateSprite(m_NormSprite.get());
-	updateSprite(m_HoverSprite.get());
-	updateSprite(m_PressSprite.get());
+	updateSpritePos(m_NormSprite.get());
+	updateSpritePos(m_HoverSprite.get());
+	updateSpritePos(m_PressSprite.get());
 }
 
 void Button::SetPosition(const sf::Vector2f& pos) noexcept
@@ -58,70 +58,38 @@ void Button::SetPosition(const sf::Vector2f& pos) noexcept
 
 void Button::OnMouseEnter() noexcept
 {
+	Widget::OnMouseEnter();
+
 	m_FrontSprite = m_HoverSprite.get();
 }
 
 void Button::OnMouseLeave() noexcept
 {
+	Widget::OnMouseLeave();
+
 	m_FrontSprite = m_NormSprite.get();
-	window.setMouseCursor(std::move(sf::Cursor(sf::Cursor::Type::Arrow)));
 }
 
 void Button::OnMouseMove(int x, int y) noexcept
 {
-	sf::Vector2f corner = std::move(GetCorner(
-		ECorner::RIGHT_BOTTOM, m_Pos, m_Size));
-
-	corner.x -= 12.5f;
-	corner.y -= 12.5f;
-
-	if (
-		(x >= corner.x && x < (corner.x + 12.5f))
-		&&
-		(y >= corner.y && y < (corner.y + 12.5f))
-		)
-	{
-		debugShape.setPosition(corner);
-		window.setMouseCursor(std::move(sf::Cursor(sf::Cursor::Type::SizeBottomRight)));
-	}
-	else
-	{
-		debugShape.setPosition({ 0.f, 0.f });
-		window.setMouseCursor(std::move(sf::Cursor(sf::Cursor::Type::Arrow)));
-	}
+	Widget::OnMouseMove(x, y);
 }
 
 void Button::OnPress() noexcept
 {
+	Widget::OnPress();
+
 	m_FrontSprite = m_PressSprite.get();
 }
 
 void Button::OnRelease() noexcept
 {
+	Widget::OnRelease();
+
 	m_FrontSprite = m_HoverSprite.get();
 
 	if (m_CallBackFunc)
 		m_CallBackFunc();
-}
-
-bool Button::IsOnResizeCorner(int x, int y) noexcept
-{
-	sf::Vector2f corner = std::move(GetCorner(
-		ECorner::RIGHT_BOTTOM, m_Pos, m_Size));
-
-	corner.x -= 12.5f;
-	corner.y -= 12.5f;
-
-	if (
-		(x >= corner.x && x < (corner.x + 12.5f))
-		&&
-		(y >= corner.y && y < (corner.y + 12.5f))
-		)
-	{
-		return true;
-	}
-
-	return false;
 }
 
 void Button::SetNormalVisual(const sf::Texture& texture)

@@ -66,10 +66,15 @@ void Widget::OnMouseEnter() noexcept
 
 void Widget::OnMouseLeave() noexcept
 {
+	window.setMouseCursor(std::move(sf::Cursor(sf::Cursor::Type::Arrow)));
 }
 
 void Widget::OnMouseMove(int x, int y) noexcept
 {
+	if (IsOnResizeCorner(x, y))
+		window.setMouseCursor(std::move(sf::Cursor(sf::Cursor::Type::SizeBottomRight)));
+	else
+		window.setMouseCursor(std::move(sf::Cursor(sf::Cursor::Type::Arrow)));
 }
 
 void Widget::OnPress() noexcept
@@ -98,6 +103,26 @@ void Widget::CheckRelease(int x, int y, const sf::Mouse::Button& button) noexcep
 	}
 }
 
+bool Widget::IsOnResizeCorner(int x, int y) noexcept
+{
+	sf::Vector2f corner = std::move(GetCorner(
+		ECorner::RIGHT_BOTTOM, m_Pos, m_Size));
+
+	corner.x -= 12;
+	corner.y -= 12;
+
+	if (
+		(x >= corner.x && x < (corner.x + 12))
+		&&
+		(y >= corner.y && y < (corner.y + 12))
+		)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 void Widget::SetSize(sf::Vector2f size) noexcept
 {
 	if (size.x >= 12)
@@ -117,4 +142,5 @@ void Widget::SetPosition(const sf::Vector2f& pos) noexcept
 void Widget::Render()
 {
 	window.draw(m_Shape);
+	//window.draw(debugShape);
 }

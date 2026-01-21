@@ -35,6 +35,8 @@ int main()
 	btn.SetSize({ 250.f, 250.f });
 	btn.SetPosition({ 25.f, 100.f });
 
+	Widget w{ window };
+	uiManager.AddWidget(&w);
 	uiManager.AddWidget(&btn);
 
 
@@ -61,19 +63,17 @@ int main()
 
 			if (const auto& moveEvent = event->getIf<sf::Event::MouseMoved>())
 			{
-				uiManager.OnMouseMove(uiManager.DragStartPos, moveEvent->position.x, moveEvent->position.y);
+				uiManager.OnMouseMove(moveEvent->position.x, moveEvent->position.y);
 			}
 
 			if (const auto& pressEvent = event->getIf<sf::Event::MouseButtonPressed>())
 			{
-				uiManager.DragStartPos = pressEvent->position;
 				uiManager.OnMousePress(pressEvent->position.x, pressEvent->position.y, pressEvent->button);
 			}
 
 			if (const auto& releaseEvent = event->getIf<sf::Event::MouseButtonReleased>())
 			{
 				uiManager.OnMouseRelease(releaseEvent->position.x, releaseEvent->position.y, releaseEvent->button);
-				uiManager.DragStartPos = sf::Vector2i();
 			}
 		}
 

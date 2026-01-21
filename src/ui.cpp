@@ -26,7 +26,7 @@ void UI::UiManager::RenderAllWidgets(sf::RenderWindow* window)
 	}
 }
 
-void UI::UiManager::OnMouseMove(sf::Vector2i beforePos, int x, int y)
+void UI::UiManager::OnMouseMove(int x, int y)
 {
 	for (const auto& w : m_Widgets)
 	{
