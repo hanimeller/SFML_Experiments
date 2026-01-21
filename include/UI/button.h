@@ -29,14 +29,15 @@ public:
 
 	void Render() override;
 
-	void SetSize(const sf::Vector2f& size) noexcept;
-	void SetPosition(const sf::Vector2f& pos) noexcept;
+	void SetSize(sf::Vector2f size) noexcept override;
+	void SetPosition(const sf::Vector2f& pos) noexcept override;
 
 	void OnMouseEnter() noexcept override;
 	void OnMouseLeave() noexcept override;
 	void OnMouseMove(int x, int y) noexcept override;
 	void OnPress() noexcept override;
 	void OnRelease() noexcept override;
+	bool IsOnResizeCorner(int x, int y) noexcept override;
 
 	void SetNormalVisual(const sf::Texture& texture);
 	void SetHoverVisual(const sf::Texture& texture);

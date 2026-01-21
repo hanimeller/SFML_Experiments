@@ -41,13 +41,18 @@ namespace UI
         void RemoveWidget(Widget* w);
         void RenderAllWidgets(sf::RenderWindow* window);
         
-        void OnMouseMove(int x, int y);
+        void OnMouseMove(sf::Vector2i beforePos, int x, int y);
         void OnMousePress(int x, int y, const sf::Mouse::Button& button);
         void OnMouseRelease(int x, int y, const sf::Mouse::Button& button);
 
+        void MouseAttachWidget(Widget* w);
+
     private:
         sf::RenderWindow& window;
-
+        Widget* m_MouseAttachedWidget{ nullptr };
         std::unordered_set<Widget*> m_Widgets;
+
+    public:
+        sf::Vector2i DragStartPos;
 	};
 }

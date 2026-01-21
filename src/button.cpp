@@ -7,53 +7,46 @@ void Button::Render()
 
 	if (m_FrontSprite)
 		window.draw(*m_FrontSprite);
+
+	//window.draw(debugShape);
 }
 
-void Button::SetSize(const sf::Vector2f& size) noexcept
+void Button::SetSize(sf::Vector2f size) noexcept
 {
 	Widget::SetSize(size);
 
-	if (m_NormSprite)
-	{
-		const auto& spriteRect = m_NormSprite->getGlobalBounds();
-		int width = std::min(m_Size.x, spriteRect.size.x);
-		int height = std::min(m_Size.y, spriteRect.size.y);
-
-		sf::IntRect newSizeRect({0, 0}, {width, height});
-
-		if (m_NormSprite)
+	auto updateSprite = [this](sf::Sprite* sprite)
 		{
-			m_NormSprite->setTextureRect(newSizeRect);
-		}
-	}
+			if (!sprite)
+				return;
 
-	if (m_HoverSprite)
-	{
-		const auto& spriteRect = m_HoverSprite->getGlobalBounds();
-		int width = std::min(m_Size.x, spriteRect.size.x);
-		int height = std::min(m_Size.y, spriteRect.size.y);
+			sf::Vector2u texSize = sprite->getTexture().getSize();
+			float origW = static_cast<float>(texSize.x);
+			float origH = static_cast<float>(texSize.y);
 
-		sf::IntRect newSizeRect({ 0, 0 }, { width, height });
+			int width = std::min(static_cast<int>(m_Size.x), static_cast<int>(origW));
+			int height = std::min(static_cast<int>(m_Size.y), static_cast<int>(origH));
+			sprite->setTextureRect({ {0, 0}, {width, height} });
 
-		if (m_HoverSprite) m_HoverSprite->setTextureRect(newSizeRect);
-	}
-	if (m_PressSprite)
-	{
-		const auto& spriteRect = m_PressSprite->getGlobalBounds();
-		int width = std::min(m_Size.x, spriteRect.size.x);
-		int height = std::min(m_Size.y, spriteRect.size.y);
+			sf::Vector2f centerPos;
+			centerPos.x = m_Pos.x + (m_Size.x - static_cast<float>(width)) / 2.0f;
+			centerPos.y = m_Pos.y + (m_Size.y - static_cast<float>(height)) / 2.0f;
+			sprite->setPosition(centerPos);
+		};
 
-		sf::IntRect newSizeRect({ 0, 0 }, { width, height });
-
-		if (m_PressSprite) m_PressSprite->setTextureRect(newSizeRect);
-	}
+	updateSprite(m_NormSprite.get());
+	updateSprite(m_HoverSprite.get());
+	updateSprite(m_PressSprite.get());
 }
 
 void Button::SetPosition(const sf::Vector2f& pos) noexcept
 {
 	Widget::SetPosition(pos);
 
-	sf::Vector2f centerPos = pos;
+	if (!m_NormSprite)
+		return;
+
+	sf::Vector2f centerPos;
 	const auto& spriteRect = m_NormSprite->getGlobalBounds();
 	centerPos.x = pos.x + ((m_Size.x / 2) - spriteRect.size.x / 2);
 	centerPos.y = pos.y + ((m_Size.y / 2) - spriteRect.size.y / 2);
@@ -71,7 +64,6 @@ void Button::OnMouseEnter() noexcept
 void Button::OnMouseLeave() noexcept
 {
 	m_FrontSprite = m_NormSprite.get();
-	debugShape.setPosition({ 0.f, 0.f });
 	window.setMouseCursor(std::move(sf::Cursor(sf::Cursor::Type::Arrow)));
 }
 
@@ -110,6 +102,26 @@ void Button::OnRelease() noexcept
 
 	if (m_CallBackFunc)
 		m_CallBackFunc();
+}
+
+bool Button::IsOnResizeCorner(int x, int y) noexcept
+{
+	sf::Vector2f corner = std::move(GetCorner(
+		ECorner::RIGHT_BOTTOM, m_Pos, m_Size));
+
+	corner.x -= 12.5f;
+	corner.y -= 12.5f;
+
+	if (
+		(x >= corner.x && x < (corner.x + 12.5f))
+		&&
+		(y >= corner.y && y < (corner.y + 12.5f))
+		)
+	{
+		return true;
+	}
+
+	return false;
 }
 
 void Button::SetNormalVisual(const sf::Texture& texture)

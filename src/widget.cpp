@@ -98,10 +98,14 @@ void Widget::CheckRelease(int x, int y, const sf::Mouse::Button& button) noexcep
 	}
 }
 
-void Widget::SetSize(const sf::Vector2f& size) noexcept
+void Widget::SetSize(sf::Vector2f size) noexcept
 {
-	m_Size = size;
-	m_Shape.setSize(size);
+	if (size.x >= 12)
+		m_Size.x = size.x;
+	if (size.y >= 12)
+		m_Size.y = size.y;
+
+	m_Shape.setSize(m_Size);
 }
 
 void Widget::SetPosition(const sf::Vector2f& pos) noexcept
@@ -113,5 +117,4 @@ void Widget::SetPosition(const sf::Vector2f& pos) noexcept
 void Widget::Render()
 {
 	window.draw(m_Shape);
-	window.draw(debugShape);
 }

@@ -69,8 +69,11 @@ public:
 	void CheckPress(int x, int y, const sf::Mouse::Button& button) noexcept;
 	void CheckRelease(int x, int y, const sf::Mouse::Button& button) noexcept;
 
-	virtual void SetSize(const sf::Vector2f& size) noexcept;
+	virtual bool IsOnResizeCorner(int x, int y) noexcept { return false; }
+
+	virtual void SetSize(sf::Vector2f size) noexcept;
 	virtual void SetPosition(const sf::Vector2f& pos) noexcept;
+	virtual sf::Vector2f GetPosition() { return m_Pos; }
 
 protected:
 	sf::RenderWindow& window;
