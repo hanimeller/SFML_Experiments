@@ -7,7 +7,11 @@
 Widget::Widget(sf::RenderWindow& w)
 	: window(w)
 {
-	m_Shape.setSize({ 75.f, 35.f });
+	name = GenerateRandomName("Widget-", 0, 800);
+
+	m_Size.x = 75.f;
+	m_Size.y = 35.f;
+	m_Shape.setSize(m_Size);
 	m_Shape.setPosition({ 2.f, 2.f });
 	m_Shape.setFillColor(sf::Color::Transparent);
 	m_Shape.setOutlineColor(sf::Color::Green);
@@ -77,7 +81,7 @@ void Widget::OnMouseMove(int x, int y) noexcept
 		window.setMouseCursor(std::move(sf::Cursor(sf::Cursor::Type::Arrow)));
 }
 
-void Widget::OnPress() noexcept
+void Widget::OnPress(const sf::Mouse::Button& button) noexcept
 {
 }
 
@@ -90,7 +94,7 @@ void Widget::CheckPress(int x, int y, const sf::Mouse::Button& button) noexcept
 	if (IsOverlap(x, y))
 	{
 		bPressed = true;
-		OnPress();
+		OnPress(button);
 	}
 }
 

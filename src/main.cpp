@@ -36,6 +36,7 @@ int main()
 	btn.SetPosition({ 25.f, 100.f });
 
 	Widget w{ window };
+	w.SetPosition(sf::Vector2f(100, 50));
 	uiManager.AddWidget(&w);
 	uiManager.AddWidget(&btn);
 
@@ -80,7 +81,7 @@ int main()
 
 		window.clear(sf::Color(47, 0, 64));
 
-		uiManager.RenderAllWidgets(&window);
+		uiManager.RenderAllWidgets();
 
 		window.display();
 	}

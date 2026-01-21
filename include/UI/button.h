@@ -1,7 +1,6 @@
 #pragma once
 
 #include "UI/widget.h"
-#include <functional>
 
 class Button : public Widget
 {
@@ -11,21 +10,9 @@ protected:
 	std::unique_ptr<sf::Sprite> m_HoverSprite;
 	std::unique_ptr<sf::Sprite> m_PressSprite;
 
-	std::function<void()> m_CallBackFunc;
-
 public:
 	using Widget::Widget;
-
-	template <typename F, typename... Args>
-	void SetCallback(F&& func, Args&&... args)
-	{
-		auto lambda = [=]() mutable
-			{
-				func(args...);
-			};
-
-		m_CallBackFunc = std::move(lambda);
-	}
+	explicit Button(sf::RenderWindow& w);
 
 	void Render() override;
 
@@ -35,7 +22,7 @@ public:
 	void OnMouseEnter() noexcept override;
 	void OnMouseLeave() noexcept override;
 	void OnMouseMove(int x, int y) noexcept override;
-	void OnPress() noexcept override;
+	void OnPress(const sf::Mouse::Button& button) noexcept override;
 	void OnRelease() noexcept override;
 
 	void SetNormalVisual(const sf::Texture& texture);

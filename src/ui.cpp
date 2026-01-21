@@ -18,7 +18,7 @@ void UI::UiManager::RemoveWidget(Widget* w)
 	m_Widgets.erase(w);
 }
 
-void UI::UiManager::RenderAllWidgets(sf::RenderWindow* window)
+void UI::UiManager::RenderAllWidgets()
 {
 	for (const auto& w : m_Widgets)
 	{

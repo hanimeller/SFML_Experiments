@@ -1,5 +1,8 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <functional>
+#include <string>
+#include "utils.h"
 
 enum class ECorner : uint8_t
 {
@@ -19,6 +22,13 @@ static std::string GetButtonName(const sf::Mouse::Button& button) noexcept
 	}
 
 	return std::string();
+}
+
+static std::string GenerateRandomName(std::string prefix, int min, int max)
+{
+	std::string s = prefix + std::to_string(math::rand(0, 800));
+
+	return s;
 }
 
 static sf::Vector2f GetCorner(
@@ -53,18 +63,24 @@ static sf::Vector2f GetCorner(
 
 class Widget
 {
+protected:
+	std::string name;
+
 public:
 	explicit Widget(sf::RenderWindow& w);
 	virtual ~Widget() = default;
 
 	virtual void Render();
+
+	const std::string& GetName() const { return name; }
+
 	void CheckHover(int x, int y) noexcept;
 
 	virtual void OnMouseEnter() noexcept;
 	virtual void OnMouseLeave() noexcept;
 	virtual void OnMouseMove(int x, int y) noexcept;
 
-	virtual void OnPress() noexcept;
+	virtual void OnPress(const sf::Mouse::Button& button) noexcept;
 	virtual void OnRelease() noexcept;
 	void CheckPress(int x, int y, const sf::Mouse::Button& button) noexcept;
 	void CheckRelease(int x, int y, const sf::Mouse::Button& button) noexcept;
@@ -72,8 +88,9 @@ public:
 	virtual bool IsOnResizeCorner(int x, int y) noexcept;
 
 	virtual void SetSize(sf::Vector2f size) noexcept;
+	virtual sf::Vector2f GetSize() const noexcept { return m_Size; }
 	virtual void SetPosition(const sf::Vector2f& pos) noexcept;
-	virtual sf::Vector2f GetPosition() { return m_Pos; }
+	virtual sf::Vector2f GetPosition() const noexcept { return m_Pos; }
 
 protected:
 	sf::RenderWindow& window;
@@ -85,4 +102,18 @@ protected:
 	bool bPressed{ false };
 
 	bool IsOverlap(int x, int y) noexcept;
+
+	std::function<void()> m_CallBackFunc;
+
+public:
+	template <typename F, typename... Args>
+	void SetCallback(F&& func, Args&&... args)
+	{
+		auto lambda = [=]() mutable
+			{
+				func(args...);
+			};
+
+		m_CallBackFunc = std::move(lambda);
+	}
 };

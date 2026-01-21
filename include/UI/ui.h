@@ -39,7 +39,7 @@ namespace UI
         //void CreateWidget(EWidgetType type);
         void AddWidget(Widget* w) noexcept;
         void RemoveWidget(Widget* w);
-        void RenderAllWidgets(sf::RenderWindow* window);
+        void RenderAllWidgets();
         
         void OnMouseMove(int x, int y);
         void OnMousePress(int x, int y, const sf::Mouse::Button& button);

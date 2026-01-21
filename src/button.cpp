@@ -1,6 +1,13 @@
 #include "UI/button.h"
 #include <iostream>
 
+
+Button::Button(sf::RenderWindow& w)
+	: Widget(w)
+{
+	name = GenerateRandomName("Button-", 0, 800);
+}
+
 void Button::Render()
 {
 	Widget::Render();
@@ -75,9 +82,9 @@ void Button::OnMouseMove(int x, int y) noexcept
 	Widget::OnMouseMove(x, y);
 }
 
-void Button::OnPress() noexcept
+void Button::OnPress(const sf::Mouse::Button& button) noexcept
 {
-	Widget::OnPress();
+	Widget::OnPress(button);
 
 	m_FrontSprite = m_PressSprite.get();
 }
